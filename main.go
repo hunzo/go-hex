@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-hex/repository"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -37,22 +38,60 @@ func main() {
 		return c.JSON(d)
 	})
 
+	app.Get("/get/:id", func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		if id == "" {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		i, err := strconv.Atoi(id)
+		if err != nil {
+			return c.SendStatus(fiber.StatusUnprocessableEntity)
+		}
+
+		d, err := payloadRepo.GetById(i)
+		if err != nil {
+			return c.SendStatus(fiber.StatusUnprocessableEntity)
+		}
+		return c.JSON(d)
+	})
+
+	app.Get("/delete/:id", func(c *fiber.Ctx) error {
+		id := c.Params("id")
+		if id == "" {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		i, err := strconv.Atoi(id)
+		if err != nil {
+			return c.SendStatus(fiber.StatusUnprocessableEntity)
+		}
+
+		if err := payloadRepo.DeleteById(i); err != nil {
+			return c.SendStatus(fiber.StatusUnprocessableEntity)
+		}
+
+		return c.JSON(fiber.Map{
+			"success": true,
+		})
+	})
+
 	app.Get("/create", func(c *fiber.Ctx) error {
 
 		if err != nil {
 			panic(err)
 		}
-
-		id, err := uuid.NewRandom()
-		if err != nil {
-			return c.SendStatus(fiber.StatusUnprocessableEntity)
-		}
+		j := `{
+			"testsetset": "testst",
+			"tdfsdf": "sdfsfsdf"
+		}`
 
 		p := repository.Payload{
-			Uid:         id,
+			Uid:         uuid.New(),
 			FileName:    "fileName",
 			FileType:    "application/json",
-			FileContent: "<h1>TEST</h1>",
+			FileContent: []byte("hello world"),
+			FileList:    []byte(j),
 		}
 
 		if err := payloadRepo.CreateData(p); err != nil {
