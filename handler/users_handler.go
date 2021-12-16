@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"go-hex/service"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -20,8 +21,28 @@ func (h UserHandler) GetUsers(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(err)
 	}
+	ret := []UsersResponse{}
+	for _, v := range rs {
+		ret = append(ret, UsersResponse{
+			Firstname: v.Firstname,
+			LastName:  v.LastName,
+		})
+	}
+	return c.JSON(ret)
+}
 
-	return c.JSON(rs)
+func (h UserHandler) DeleteUserById(c *fiber.Ctx) error {
+	id := c.Params("id")
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+	if err := h.userSrv.DeleteUserById(i); err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(err.Error())
+	}
+	return c.JSON(fiber.Map{
+		"success": true,
+	})
 }
 
 func (h UserHandler) CreateUser(c *fiber.Ctx) error {

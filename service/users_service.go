@@ -16,23 +16,30 @@ func NewUserService(ur repository.UsersRepository) userSevice {
 }
 
 func (s userSevice) GetUsers() ([]UsersResponse, error) {
-	u, err := s.userRepo.GetUsers()
+	users, err := s.userRepo.GetUsers()
 	if err != nil {
 		return nil, err
 	}
 	userResponses := []UsersResponse{}
 
-	for _, user := range u {
+	for _, user := range users {
 		userRespone := UsersResponse{
 			Firstname: user.Firstname,
 			LastName:  user.LastName,
-			// FilesAttachements: ,
 		}
 
 		userResponses = append(userResponses, userRespone)
 	}
 
 	return userResponses, nil
+}
+
+func (s userSevice) DeleteUserById(id int) error {
+	if err := s.userRepo.DeleteUserById(id); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
 }
 
 func (s userSevice) CreateUser(user UserCreate) error {

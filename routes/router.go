@@ -22,5 +22,6 @@ func SetupRouters(r *fiber.App) {
 
 	r.Get("/", userHandler.GetUsers)
 	r.Post("/create", userHandler.CreateUser)
+	r.Get("/delete/:id", userHandler.DeleteUserById)
 
 }
