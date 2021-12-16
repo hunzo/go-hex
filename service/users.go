@@ -1,9 +1,9 @@
 package service
 
 type UsersResponse struct {
-	Firstname         string
-	LastName          string
-	FilesAttachements []Files
+	Firstname string
+	LastName  string
+	// FilesAttachements []Files
 }
 
 type Files struct {
@@ -13,6 +13,13 @@ type Files struct {
 	FielBytes []byte
 }
 
+type UserCreate struct {
+	Firstname string
+	LastName  string
+	// FilesAttachements []Files
+}
+
 type UserSevice interface {
 	GetUsers() ([]UsersResponse, error)
+	CreateUser(UserCreate) error
 }

@@ -21,5 +21,6 @@ func SetupRouters(r *fiber.App) {
 	userHandler := handler.NewHandler(userService)
 
 	r.Get("/", userHandler.GetUsers)
+	r.Post("/create", userHandler.CreateUser)
 
 }

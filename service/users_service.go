@@ -1,6 +1,9 @@
 package service
 
-import "go-hex/repository"
+import (
+	"fmt"
+	"go-hex/repository"
+)
 
 type userSevice struct {
 	userRepo repository.UsersRepository
@@ -30,4 +33,20 @@ func (s userSevice) GetUsers() ([]UsersResponse, error) {
 	}
 
 	return userResponses, nil
+}
+
+func (s userSevice) CreateUser(user UserCreate) error {
+
+	payload := repository.UserCreate{
+		Firstname: user.Firstname,
+		LastName:  user.LastName,
+	}
+
+	fmt.Printf("services: %v\n", payload)
+
+	if err := s.userRepo.CreateUser(payload); err != nil {
+		return err
+	}
+
+	return nil
 }

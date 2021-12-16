@@ -4,9 +4,9 @@ import "gorm.io/gorm"
 
 type Users struct {
 	gorm.Model
-	Firstname         string
-	LastName          string
-	FilesAttachements []Files `gorm:"foreignKey:FileID"`
+	Firstname string
+	LastName  string
+	// FilesAttachements []Files `gorm:"foreignKey:FileID"`
 }
 
 type Files struct {
@@ -15,7 +15,13 @@ type Files struct {
 	FileType  string
 	FielBytes []byte
 }
+type UserCreate struct {
+	Firstname string
+	LastName  string
+	// FilesAttachements []Files
+}
 
 type UsersRepository interface {
 	GetUsers() ([]Users, error)
+	CreateUser(UserCreate) error
 }

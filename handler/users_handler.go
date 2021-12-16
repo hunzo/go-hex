@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"go-hex/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,4 +22,23 @@ func (h UserHandler) GetUsers(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(rs)
+}
+
+func (h UserHandler) CreateUser(c *fiber.Ctx) error {
+	req := UsersReq{}
+	if err := c.BodyParser(&req); err != nil {
+		return c.SendStatus(fiber.StatusUnprocessableEntity)
+	}
+
+	uc := service.UserCreate{
+		Firstname: req.Firstname,
+		LastName:  req.LastName,
+	}
+
+	fmt.Printf("handler: %v\n", uc)
+
+	if err := h.userSrv.CreateUser(uc); err != nil {
+		return c.SendStatus(fiber.StatusUnprocessableEntity)
+	}
+	return c.SendStatus(fiber.StatusCreated)
 }
